@@ -1,13 +1,26 @@
 name: build
-on: [push, workflow_dispatch]
+
+on:
+  push:
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - run: cmake -S . -B build -A Win32
-      - run: cmake --build build --config Release
+
+      # MSVC 32-bit toolchain (GTA SA is a 32-bit game)
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x86
+
+      - name: Compile NeonAura.asi
+        shell: cmd
+        run: cl /nologo /LD /O2 /EHsc /MT /fp:fast main.cpp /Fe:NeonAura.asi /link user32.lib kernel32.lib
+
       - uses: actions/upload-artifact@v4
         with:
           name: NeonAura
-          path: build/Release/NeonAura.asi
+          path: NeonAura.asi
+          if-no-files-found: error
