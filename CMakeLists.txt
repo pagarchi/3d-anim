@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.15)
+project(NeonAura CXX)
+add_library(NeonAura SHARED NeonAura.cpp)
+set_target_properties(NeonAura PROPERTIES PREFIX "" SUFFIX ".asi")
+set_property(TARGET NeonAura PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
+target_compile_options(NeonAura PRIVATE /O2 /EHsc /fp:fast)
+target_link_libraries(NeonAura PRIVATE user32)
